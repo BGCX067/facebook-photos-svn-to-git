@@ -1,0 +1,97 @@
+<script type="text/javascript">
+var lastPhoto = false;
+function silas_showOptions(id) {
+    if (lastPhoto) silas_hideOptions(lastPhoto)
+    lastPhoto = id
+
+    var div = document.getElementById('options-'+id)
+    if (div) div.style.display='block';
+    return false;
+}
+function silas_hideOptions(id) {
+    var div = document.getElementById('options-'+id)
+    if (div) div.style.display='none';
+    
+    var e = window.event;
+	if (e) {
+        e.cancelBubble = true;
+    	if (e.stopPropagation) e.stopPropagation();
+    }
+    return false;
+}
+function silas_addPhoto(photoUrl, sourceUrl, width, height, title) {
+    var h = 
+        '<a href="'+photoUrl+'" class="tt-facebook-photo">' +
+        '<img src="'+sourceUrl+'" alt="'+title+'" width="'+width+'" height="'+height+'" border="0" />' +
+        '</a> '
+        
+    var win = window.opener ? window.opener : window.dialogArguments;
+	if ( !win ) win = top;
+	tinyMCE = win.tinyMCE;
+	if ( typeof tinyMCE != 'undefined' && tinyMCE.getInstanceById('content') ) {
+		tinyMCE.selectedInstance.getWin().focus();
+		tinyMCE.execCommand('mceInsertContent', false, h);
+	} else win.edInsertContent(win.edCanvas, h);
+
+	return false;
+}
+</script>
+<style type="text/css">
+#upload-files a.file-link {
+    position:relative;
+    width:75px;
+    height:75px;
+    overflow:hidden;
+}
+.photo-options {
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:125px;
+    padding:5px;
+    
+    background:white;
+    opacity:0.9;
+    border:1px solid #ccc;
+    font-size:10px;
+	line-height:12px;
+    z-index:10;
+    
+    display:none;
+}
+.alignleft {
+    position:relative;
+}
+#upload-content {
+    padding-top:10px;
+}
+#upload-files {
+    clear:both;
+}
+</style>
+<strong><?php echo $album['name'];?></strong> | <?php echo date('F j, Y', $album['created']);?> | <?php echo $numPhotos?> photo<?php if($numPhotos > 1):?>s<?php endif;?><?php if ($album['location']):?> | Location: <?php echo $album['location']?><?php endif;?><br /> 
+<?php if ($album['description']):?><em><?php echo $album['description']?></em><?php endif;?>
+<ul id='upload-files'>
+<?php if ($numPhotos <= 0):?>
+Sorry, no photos found!
+<?php elseif (is_array($photos)): ?>
+<?php
+$id = 1;
+foreach ($photos as $photo):?>
+<li id='facebook-photo-<?php echo $id?>' class='alignleft'>
+<a id='file-link-<?php echo $id;?>' href='<?php echo $photo['link']?>' title='<?php echo htmlentities(strip_tags($photo['caption']));?>' class='file-link image' onclick="return silas_showOptions(<?php echo $id?>);"><img 
+    id="image<?php echo $photo['pid']?>" src="<?php echo $photo['src_small']?>" alt="<?php echo htmlentities(strip_tags($photo['caption']));?>" height="" width="" border="0" /></a>
+    <div class="photo-options" id="options-<?php echo $id?>">
+        <a href="<?php echo $photo['src_small']?>" onclick="return silas_addPhoto('<?php echo $photo['link']?>', this, '', '', '<?php echo addslashes(htmlentities($photo['caption']));?>')">Small <span class="props"> (max: 75x225)</span></a><br />
+        <a href="<?php echo $photo['src']?>" onclick="return silas_addPhoto('<?php echo $photo['link']?>', this, '', '', '<?php echo addslashes(htmlentities($photo['caption']));?>')">Medium <span class="props"> (max: 130x130)</span></a><br />
+        <a href="<?php echo $photo['src_big']?>" onclick="return silas_addPhoto('<?php echo $photo['link']?>', this, '', '', '<?php echo addslashes(htmlentities($photo['caption']));?>')">Large <span class="props"> (max: 604x604)</span></a><br />
+        <br />
+    <a href="#" onclick="return silas_hideOptions(<?php echo $id?>);">close</a>
+    </div>
+
+</li>
+<?php 
+$id++;
+endforeach;?>
+<?php endif; ?>
+</ul>

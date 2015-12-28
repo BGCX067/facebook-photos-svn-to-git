@@ -1,0 +1,3 @@
+#summary Known issues and workarounds for this plugin
+
+Nothing so far.

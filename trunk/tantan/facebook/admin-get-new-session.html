@@ -1,0 +1,18 @@
+<div id="new-session">
+    <p>
+    <strong>Your Facebook login session has expired!</strong><br />
+    Just click <strong>1.</strong> and <strong>2.</strong> to get a new Facebook.com login session.
+    </p>
+ <form method="get" id="login-form" action="http://www.facebook.com/login.php" target="_blank">
+     <input type="hidden" name="api_key" value="<?php echo FACEBOOK_API_KEY;?>" />
+     <input type="hidden" name="v" value="1.0" />
+     <input type="hidden" name="auth_token" value="<?php echo $authToken;?>" />
+     <input type="hidden" name="popup" value="1" />
+    <input type="submit" value="1. Login to Facebook.com" ?>
+</form>
+<form method="post" id="apply-session">
+    <input type="hidden" name="action" value="get-new-session" />
+    <input type="hidden" name="auth_token" value="<?php echo $authToken;?>" />
+    <input type="submit" id="revalidate" value="2. Apply new Facebook login &gt; ">
+</form>
+</div>

@@ -1,0 +1,21 @@
+
+<fieldset class="options">
+<legend>Facebook Settings</legend>
+
+<table width="100%" cellspacing="2" cellpadding="5" class="editform"> 
+<form method="post">
+<input type="hidden" name="action" value="logout" />
+<tr valign="top">
+<th width="33%" scope="row">Facebook User:</th> 
+<td><a href="http://www.facebook.com/profile.php?id=<?php echo $user['uid'];?>"><strong><?php echo $user['name'];?></strong></a> &nbsp; <input type="submit" value="Remove Link &gt;" />
+<br>
+<small>This plugin has been granted permission to retrieve data from this Facebook account. 
+    You can revoke these permissions in your <a href="http://www.facebook.com/privacy.php?view=everyone">Facebook privacy settings</a>, or by clicking the "Remove Link" button above.</small>
+</td> 
+</tr>
+</form>
+
+</table>
+
+
+</fieldset>

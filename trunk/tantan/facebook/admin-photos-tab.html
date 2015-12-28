@@ -1,0 +1,58 @@
+<div class="tablenav">
+<div class="tablenav-pages">
+
+<?php if ($album):?>
+<?php echo date('F j, Y', $album['created']);?> | <?php echo $numPhotos?> photo<?php if($numPhotos > 1):?>s<?php endif;?><?php if ($album['location']):?> | <?php echo $album['location']?><?php endif;?><br /> 
+<?php if ($album['description']):?><em><?php echo $album['description']?></em><?php endif;?>
+<?php elseif ( $numPhotos ):?>
+    <?php echo $numPhotos;?> photos
+<?php endif;?>
+
+</div>
+<form id="album-select" method="post">
+<?php if ($album):?>
+Album: <select size="1" name="aid" onchange="document.getElementById('album-select').submit();">
+<?php foreach ($albums as $album):?>
+    <option value="<?php echo $album['aid'];?>" <?php echo (isset($_POST['aid']) && ($_POST['aid'] == $album['aid']) ? 'selected="selected"' : '');?>><?php echo $album['name'];?></option>
+<?php endforeach;?>
+</select>
+<?php endif;?>
+
+<?php if (!ereg('media-upload.php', $_SERVER['REQUEST_URI'])):?>
+    <?php if ($_REQUEST['tt-type']):?>
+    <a href="<?php echo add_query_arg(array('tt-type'=>''));?>">Back to My Albums</a> | <strong>Photos of Me</strong>
+    <?php else:?>
+    | <a href="<?php echo add_query_arg(array('tt-type'=>'tagged', 'aid' => ''));?>">Photos of Me</a>
+    <?php endif;?>
+<?php endif;?>
+
+
+
+</form>
+</div>
+
+<ul id='upload-files'>
+<?php if ($numPhotos <= 0):?>
+Sorry, no photos found!
+<?php elseif (is_array($photos)): ?>
+<?php
+$id = 1;
+foreach ($photos as $photo):?>
+<li id='facebook-photo-<?php echo $id?>' class='alignleft'>
+<a id='file-link-<?php echo $id;?>' href='<?php echo $photo['link']?>' title='<?php echo htmlentities(strip_tags($photo['caption']));?>' class='file-link image' onclick="return silas_showOptions(<?php echo $id?>);"><img 
+    id="image<?php echo $photo['pid']?>" src="<?php echo $photo['src_small']?>" alt="<?php echo htmlentities(strip_tags($photo['caption']));?>" height="" width="" border="0" /></a>
+    <div class="photo-options" id="options-<?php echo $id?>">
+        <a href="<?php echo $photo['src_small']?>" onclick="return silas_addPhoto('<?php echo $photo['link']?>', this, '', '', '<?php echo addslashes(htmlentities($photo['caption']));?>', 'small')">Small <span class="props"> (max: 75x225)</span></a><br />
+        <a href="<?php echo $photo['src']?>" onclick="return silas_addPhoto('<?php echo $photo['link']?>', this, '', '', '<?php echo addslashes(htmlentities($photo['caption']));?>', 'medium')">Medium <span class="props"> (max: 130x130)</span></a><br />
+        <a href="<?php echo $photo['src_big']?>" onclick="return silas_addPhoto('<?php echo $photo['link']?>', this, '', '', '<?php echo addslashes(htmlentities($photo['caption']));?>', 'big')">Large <span class="props"> (max: 604x604)</span></a><br />
+        <br />
+    <a href="#" onclick="return silas_hideOptions(<?php echo $id?>);">close</a>
+    </div>
+
+</li>
+<?php 
+$id++;
+endforeach;?>
+<?php endif; ?>
+</ul>
+<p style="clear:both;">&nbsp;</p>
